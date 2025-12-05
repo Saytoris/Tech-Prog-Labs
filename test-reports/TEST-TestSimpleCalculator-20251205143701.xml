@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="TestSimpleCalculator-20251205143701" tests="3" file=".py" time="0.003" timestamp="2025-12-05T14:37:01" failures="0" errors="0" skipped="1">
+	<testcase classname="TestSimpleCalculator" name="test_add" time="0.001" timestamp="2025-12-05T14:37:01" file="Lab_4_Tech_Prog\test_app.py" line="13">
+		<!--Перевірка операції додавання.-->
+	</testcase>
+	<testcase classname="TestSimpleCalculator" name="test_subtract" time="0.000" timestamp="2025-12-05T14:37:01" file="Lab_4_Tech_Prog\test_app.py" line="23">
+		<!--Перевірка операції віднімання.-->
+	</testcase>
+	<testcase classname="TestSimpleCalculator" name="test_add_unsuported_format" time="0.002" timestamp="2025-12-05T14:37:01" file="Lab_4_Tech_Prog\test_app.py" line="18">
+		<skipped type="XFAIL" message="expected failure: (&lt;class 'TypeError'&gt;, TypeError('can only concatenate str (not &quot;int&quot;) to str'), &lt;traceback object at 0x0000012285212100&gt;)"/>
+	</testcase>
+</testsuite>

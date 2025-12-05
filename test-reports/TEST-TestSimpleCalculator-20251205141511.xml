@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="TestSimpleCalculator-20251205141511" tests="2" file=".py" time="0.001" timestamp="2025-12-05T14:15:11" failures="0" errors="0" skipped="0">
+	<testcase classname="TestSimpleCalculator" name="test_add" time="0.001" timestamp="2025-12-05T14:15:11" file="Lab_4_Tech_Prog\test_app.py" line="13">
+		<!--Перевірка операції додавання.-->
+	</testcase>
+	<testcase classname="TestSimpleCalculator" name="test_subtract" time="0.000" timestamp="2025-12-05T14:15:11" file="Lab_4_Tech_Prog\test_app.py" line="18">
+		<!--Перевірка операції віднімання.-->
+	</testcase>
+</testsuite>
