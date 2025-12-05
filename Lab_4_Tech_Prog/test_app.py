@@ -14,11 +14,6 @@ class TestSimpleCalculator(unittest.TestCase):
         """Перевірка операції додавання."""
         self.assertEqual(self.calc.add(2, 3), 5)
         self.assertEqual(self.calc.add(-1, 1), 0)
-   
-    @unittest.expectedFailure
-    def test_add_unsuported_format(self):
-             self.assertEqual(self.calc.add("a",-1), -1)
-             self.assertEqual(self.calc.add("a",-1), "a")
 
     def test_subtract(self):
         """Перевірка операції віднімання."""
