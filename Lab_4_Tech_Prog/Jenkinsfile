@@ -22,7 +22,7 @@ stage('Test') {
             post {
                 always {
                     // Тут теж треба вказати правильний шлях до звітів
-                    junit 'Lab_4_Tech_Prog/test-reports/*.xml'
+                    junit 'test-reports/*.xml'
                 }
             }
         }
