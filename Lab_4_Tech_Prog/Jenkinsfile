@@ -1,13 +1,4 @@
-pipeline {
-    agent none
-    stages {
-        stage('Check scm') {
-            agent any
-            steps {
-                checkout scm
-            }
-        }
-        stage('Test') {
+stage('Test') {
             agent {
                 docker {
                     image 'python:3.9-alpine'
@@ -15,14 +6,23 @@ pipeline {
                 }
             }
             steps {
-                sh 'pip install unittest-xml-reporting'
-                sh 'python test_app.py'
+                // Вказуємо Jenkins зайти в папку з лабораторною
+                dir('Lab_4_Tech_Prog') {
+                    
+                    // Спочатку видаляємо старі звіти (якщо є), щоб уникнути конфліктів
+                    sh 'rm -rf test-reports'
+                    
+                    // Встановлюємо бібліотеки
+                    sh 'pip install unittest-xml-reporting'
+                    
+                    // Тепер файл точно знайдеться
+                    sh 'python test_app.py'
+                }
             }
             post {
                 always {
-                    junit 'test-reports/*.xml'
+                    // Тут теж треба вказати правильний шлях до звітів
+                    junit 'Lab_4_Tech_Prog/test-reports/*.xml'
                 }
             }
         }
-    }
-}
