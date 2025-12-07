@@ -1,4 +1,14 @@
-stage('Test') {
+pipeline {
+    agent none
+    stages {
+        stage('Check scm') {
+            agent any
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Test') {
             agent {
                 docker {
                     image 'python:3.9-alpine'
@@ -6,23 +16,41 @@ stage('Test') {
                 }
             }
             steps {
-                // Вказуємо Jenkins зайти в папку з лабораторною
+                // Вказуємо папку, де лежить код
                 dir('Lab_4_Tech_Prog') {
+                    // Всередині dir пишемо команди напряму (БЕЗ слова steps)
                     
-                    // Спочатку видаляємо старі звіти (якщо є), щоб уникнути конфліктів
+                    // 1. Очистка
                     sh 'rm -rf test-reports'
                     
-                    // Встановлюємо бібліотеки
+                    // 2. Встановлення
                     sh 'pip install unittest-xml-reporting'
                     
-                    // Тепер файл точно знайдеться
+                    // 3. Запуск
                     sh 'python test_app.py'
                 }
             }
             post {
                 always {
-                    // Тут теж треба вказати правильний шлях до звітів
-                    junit 'test-reports/*.xml'
+                    // Шлях до звітів (теж треба вказати папку)
+                    junit 'Lab_4_Tech_Prog/test-reports/*.xml'
                 }
             }
         }
+        
+        // Блок для Docker Hub (закоментований, поки не налаштовані credentials)
+        /*
+        stage('Build & Push Image') {
+            agent any
+            steps {
+                script {
+                     docker.withRegistry('', 'docker-hub-login') {
+                        def customImage = docker.build("saytoris/lab4-calculator:${env.BUILD_ID}")
+                        customImage.push()
+                     }
+                }
+            }
+        }
+        */
+    }
+}
