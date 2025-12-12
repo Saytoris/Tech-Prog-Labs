@@ -3,11 +3,11 @@ pipeline {
     
     // Глобальні змінні для зручності
     environment {
-        // Заміни на свій логін Docker Hub!
+        // Логін Dockerhub
         DOCKERHUB_USERNAME = 'saytoris' 
         // Назва образу
         APP_NAME = 'lab4-calculator'
-        // ID ключа, який ми створили в Jenkins (Етап 2)
+        // ID ключа, який ми створили в Jenkins 
         DOCKERHUB_CREDENTIALS_ID = 'docker-hub-login'
     }
 

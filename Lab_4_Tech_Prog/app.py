@@ -11,6 +11,9 @@ class SimpleCalculator:
     def subtract(self, a, b):
         """Повертає різницю двох чисел."""
         return a - b
+    def subtrect(self, a, b):
+        """Повертає різницю двох чисел."""
+        return a - b
 
 if __name__ == "__main__":
     print("Calculator app is running...")

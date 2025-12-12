@@ -19,6 +19,10 @@ class TestSimpleCalculator(unittest.TestCase):
         """Перевірка операції віднімання."""
         self.assertEqual(self.calc.subtract(10, 5), 5)
 
+    def test_subtract(self):
+        """Перевірка операції віднімання."""
+        self.assertEqual(self.calc.subtrect(10, 5), 5)
+
 if __name__ == '__main__':
     # Налаштовуємо запуск тестів так, щоб результати зберігалися у папку 'test-reports'
     # Це необхідно для того, щоб Jenkins міг зчитати результати.

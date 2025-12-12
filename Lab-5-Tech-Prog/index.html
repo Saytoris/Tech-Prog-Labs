@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Stack S3</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f4f4f9; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        .controls { margin-bottom: 20px; padding: 15px; background: #e9ecef; border-radius: 5px; }
+        input { padding: 8px; margin-right: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 8px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        button.remove { background-color: #dc3545; }
+        button.remove:hover { background-color: #a71d2a; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #007bff; color: white; }
+        .error { color: red; margin-top: 10px; font-weight: bold; }
+        .log-area { margin-top: 20px; padding: 10px; background: #333; color: #0f0; font-family: monospace; height: 100px; overflow-y: scroll; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Управління Стеком Товарів (Product Stack)</h1>
+
+    <div class="controls">
+        <h3>Додати новий товар (Push)</h3>
+        <input type="text" id="pName" placeholder="Назва товару">
+        <input type="number" id="pPrice" placeholder="Ціна (₴)" min="0">
+        <input type="number" id="pQty" placeholder="Кількість" min="0">
+        <button onclick="uiAddProduct()">Додати в стек</button>
+    </div>
+
+    <div class="controls">
+        <h3>Керування стеком</h3>
+        <button class="remove" onclick="uiRemoveProduct()">Видалити останній (Pop)</button>
+    </div>
+
+    <h3>Поточний стан стеку:</h3>
+    <table id="productTable">
+        <thead>
+            <tr>
+                <th>Індекс</th>
+                <th>Назва</th>
+                <th>Ціна</th>
+                <th>Кількість</th>
+                <th>Дії (Edit)</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            </tbody>
+    </table>
+
+    <div id="errorMsg" class="error"></div>
+    
+    <h3>Лог операцій:</h3>
+    <div id="logArea" class="log-area"></div>
+</div>
+
+<script>
+    // --- ЛОГІКА (Портована з Python) ---
+
+    class Product {
+        constructor(name, price, quantity) {
+            this.name = name;
+            this.price = Number(price);
+            this.quantity = Number(quantity);
+        }
+    }
+
+    class ProductStack {
+        constructor() {
+            this.stack = [];
+        }
+
+        addProduct(product) {
+            if (!(product instanceof Product)) {
+                throw new Error("Можна додавати лише об’єкти класу Product.");
+            }
+            this.stack.push(product);
+            log(`[PUSH] Додано: ${product.name}`);
+        }
+
+        removeProduct() {
+            if (this.stack.length === 0) {
+                throw new Error("Стек порожній. Немає товарів для видалення.");
+            }
+            const removed = this.stack.pop();
+            log(`[POP] Видалено: ${removed.name}`);
+            return removed;
+        }
+
+        changePrice(index, newPrice) {
+            newPrice = Number(newPrice);
+            if (newPrice < 0) throw new Error("Ціна не може бути від’ємною.");
+            this.stack[index].price = newPrice;
+            log(`[EDIT] Ціна товару [${index}] змінена на ${newPrice}`);
+        }
+
+        changeQuantity(index, newQuantity) {
+            newQuantity = Number(newQuantity);
+            if (newQuantity < 0) throw new Error("Кількість не може бути від’ємною.");
+            this.stack[index].quantity = newQuantity;
+            log(`[EDIT] Кількість товару [${index}] змінена на ${newQuantity}`);
+        }
+
+        getAllProducts() {
+            return this.stack;
+        }
+    }
+
+    // --- ВЗАЄМОДІЯ З ІНТЕРФЕЙСОМ (UI) ---
+
+    const myStack = new ProductStack();
+
+    // Додаємо тестові дані (як у вашому setUp)
+    try {
+        myStack.addProduct(new Product("Хліб", 20, 15));
+        myStack.addProduct(new Product("Молоко", 30, 10));
+    } catch (e) { console.error(e); }
+    
+    renderTable(); // Малюємо таблицю при завантаженні
+
+    function uiAddProduct() {
+        const name = document.getElementById('pName').value;
+        const price = document.getElementById('pPrice').value;
+        const qty = document.getElementById('pQty').value;
+        const errorDiv = document.getElementById('errorMsg');
+        
+        errorDiv.innerText = "";
+
+        if (!name || !price || !qty) {
+            errorDiv.innerText = "Будь ласка, заповніть всі поля.";
+            return;
+        }
+
+        try {
+            const prod = new Product(name, price, qty);
+            myStack.addProduct(prod);
+            
+            // Очистити поля
+            document.getElementById('pName').value = '';
+            document.getElementById('pPrice').value = '';
+            document.getElementById('pQty').value = '';
+            
+            renderTable();
+        } catch (e) {
+            errorDiv.innerText = e.message;
+        }
+    }
+
+    function uiRemoveProduct() {
+        const errorDiv = document.getElementById('errorMsg');
+        errorDiv.innerText = "";
+        try {
+            myStack.removeProduct();
+            renderTable();
+        } catch (e) {
+            errorDiv.innerText = e.message;
+        }
+    }
+
+    function uiChangePrice(index) {
+        const newPrice = prompt("Введіть нову ціну:");
+        if (newPrice !== null) {
+            try {
+                myStack.changePrice(index, newPrice);
+                renderTable();
+            } catch (e) {
+                alert("Помилка: " + e.message);
+            }
+        }
+    }
+
+    function uiChangeQty(index) {
+        const newQty = prompt("Введіть нову кількість:");
+        if (newQty !== null) {
+            try {
+                myStack.changeQuantity(index, newQty);
+                renderTable();
+            } catch (e) {
+                alert("Помилка: " + e.message);
+            }
+        }
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = "";
+        const products = myStack.getAllProducts();
+
+        products.forEach((prod, index) => {
+            const row = `
+                <tr>
+                    <td>${index}</td>
+                    <td>${prod.name}</td>
+                    <td>₴${prod.price}</td>
+                    <td>${prod.quantity}</td>
+                    <td>
+                        <button onclick="uiChangePrice(${index})" style="background:#17a2b8; font-size:12px;">Зм. Ціну</button>
+                        <button onclick="uiChangeQty(${index})" style="background:#17a2b8; font-size:12px;">Зм. К-сть</button>
+                    </td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+    }
+
+    function log(message) {
+        const logArea = document.getElementById('logArea');
+        const time = new Date().toLocaleTimeString();
+        logArea.innerHTML += `<div>[${time}] ${message}</div>`;
+        logArea.scrollTop = logArea.scrollHeight;
+    }
+
+</script>
+
+</body>
+</html>
