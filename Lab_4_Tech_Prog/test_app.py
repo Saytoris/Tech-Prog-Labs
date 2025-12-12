@@ -19,9 +19,9 @@ class TestSimpleCalculator(unittest.TestCase):
         """Перевірка операції віднімання."""
         self.assertEqual(self.calc.subtract(10, 5), 5)
 
-    def test_subtract(self):
+    def test_subtrect(self):
         """Перевірка операції віднімання."""
-        self.assertEqual(self.calc.subtrect(10, 5), 5)
+        self.assertEqual(self.calc.subtrect(10, 5), 6)
 
 if __name__ == '__main__':
     # Налаштовуємо запуск тестів так, щоб результати зберігалися у папку 'test-reports'
