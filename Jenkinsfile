@@ -57,7 +57,7 @@ pipeline {
                             
                             echo "Pushing Docker Image..."
                             // Відправляємо на Docker Hub
-                            customImage.push()
+    
                             
                             // Також бажано ставити тег 'latest', щоб це була найсвіжіша версія
                             customImage.push('latest')
